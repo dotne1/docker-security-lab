@@ -1,0 +1,184 @@
+# ========================================
+# CRITICAL: Never commit sensitive data!
+# ========================================
+
+# Environment variables (CONTAINS API KEYS & SECRETS!)
+.env
+.env.local
+.env.*.local
+*.env
+
+# Credentials and secrets
+*.key
+*.pem
+*.crt
+*.p12
+*.pfx
+credentials/
+secrets/
+
+# ========================================
+# Docker & Application Data
+# ========================================
+
+# Docker volumes and persistent data
+monitoring/elasticsearch-data/
+kali/metasploit-db/
+kali/workspace/*
+!kali/workspace/.gitkeep
+kali/tools/*
+!kali/tools/.gitkeep
+
+# Honeypot logs (may contain sensitive reconnaissance data)
+honeypot/ssh-logs/
+honeypot/web-logs/
+
+# Logs (may contain IP addresses and sensitive data)
+*.log
+*.log.*
+logs/
+log/
+
+# ========================================
+# Python
+# ========================================
+
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Unit test / coverage
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
+
+# ========================================
+# IDE & Editors
+# ========================================
+
+# VSCode
+.vscode/
+*.code-workspace
+
+# IntelliJ / PyCharm
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Vim
+*.swp
+*.swo
+*~
+.vim/
+
+# Emacs
+*~
+\#*\#
+.\#*
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# ========================================
+# Operating Systems
+# ========================================
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+.directory
+.Trash-*
+
+# ========================================
+# Project-specific
+# ========================================
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.bak
+*.backup
+
+# Archives
+*.zip
+*.tar.gz
+*.tar.bz2
+*.rar
+
+# Database files (should never be committed)
+*.db
+*.sqlite
+*.sqlite3
+
+# Reports and findings (may contain sensitive data)
+findings/*.pdf
+reports/*.pdf
+reports/*.html
+
+# Custom configurations (may contain local paths/settings)
+config.local.yml
+docker-compose.override.yml
+
+# Test data
+test-data/
+*.pcap
+
+# ========================================
+# Security Scanning Results
+# ========================================
+
+# Scan results may contain sensitive info
+scan-results/
+nmap-output/
+*.nmap
+*.xml
+*.gnmap
+

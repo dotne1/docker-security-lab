@@ -1,0 +1,169 @@
+version: '3.8'
+
+networks:
+  pentest-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+  
+  vulnerable-network:
+    driver: bridge
+    internal: true  # No internet access
+    ipam:
+      config:
+        - subnet: 172.21.0.0/16
+  
+  monitoring-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.22.0.0/16
+
+services:
+  # Kali Linux Workstation
+  kali-workstation:
+    image: kalilinux/kali-rolling
+    container_name: kali-workstation
+    hostname: kali-sec-lab
+    networks:
+      - pentest-network
+      - vulnerable-network
+    volumes:
+      - ./kali/workspace:/root/workspace
+      - ./kali/tools:/root/tools
+    stdin_open: true
+    tty: true
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    mem_limit: 4g
+    cpus: 2
+    command: /bin/bash -c "apt update && apt install -y nmap metasploit-framework sqlmap nikto dirb hydra john netcat-traditional curl wget git nano vim libblas3 liblapack3 libblas-dev liblapack-dev && tail -f /dev/null"
+
+  # DVWA - Damn Vulnerable Web Application
+  dvwa:
+    image: vulnerables/web-dvwa
+    container_name: dvwa
+    networks:
+      - vulnerable-network
+      - monitoring-network
+    ports:
+      - "8080:80"
+    mem_limit: 512m
+    cpus: 1
+    environment:
+      - MYSQL_ROOT_PASSWORD=dvwa
+      - MYSQL_DATABASE=dvwa
+      - MYSQL_USER=dvwa
+      - MYSQL_PASSWORD=p@ssw0rd
+
+  # WebGoat
+  webgoat:
+    image: webgoat/webgoat
+    container_name: webgoat
+    networks:
+      - vulnerable-network
+      - monitoring-network
+    ports:
+      - "8081:8080"
+      - "9090:9090"
+    mem_limit: 1g
+    cpus: 1
+    environment:
+      - WEBGOAT_PORT=8080
+      - WEBWOLF_PORT=9090
+
+  # OWASP Juice Shop
+  juiceshop:
+    image: bkimminich/juice-shop
+    container_name: juiceshop
+    networks:
+      - vulnerable-network
+      - monitoring-network
+    ports:
+      - "8082:3000"
+    mem_limit: 1g
+    cpus: 1
+
+  # Elasticsearch for monitoring
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.10.2
+    container_name: elasticsearch
+    networks:
+      - monitoring-network
+    ports:
+      - "9200:9200"
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    mem_limit: 1g
+    cpus: 1
+    volumes:
+      - ./monitoring/elasticsearch-data:/usr/share/elasticsearch/data
+
+  # Kibana for log visualization
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.10.2
+    container_name: kibana
+    networks:
+      - monitoring-network
+    ports:
+      - "5601:5601"
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    mem_limit: 512m
+    cpus: 1
+    depends_on:
+      - elasticsearch
+
+  # SSH Honeypot
+  ssh-honeypot:
+    image: cowrie/cowrie
+    container_name: ssh-honeypot
+    networks:
+      - pentest-network
+      - monitoring-network
+    ports:
+      - "2222:2222"
+    volumes:
+      - ./honeypot/ssh-logs:/cowrie/var/log/cowrie
+    mem_limit: 256m
+    cpus: 0.5
+
+  # Web Honeypot (using a simple nginx trap)
+  web-honeypot:
+    image: nginx:alpine
+    container_name: web-honeypot
+    networks:
+      - pentest-network
+      - monitoring-network
+    ports:
+      - "8888:80"
+    volumes:
+      - ./honeypot/web-logs:/var/log/nginx
+      - ./honeypot/web-content:/usr/share/nginx/html:ro
+    mem_limit: 128m
+    cpus: 0.5
+
+  # Metasploit Database (PostgreSQL)
+  metasploit-db:
+    image: postgres:15
+    container_name: metasploit-db
+    networks:
+      - pentest-network
+    environment:
+      - POSTGRES_PASSWORD=msf
+      - POSTGRES_USER=msf
+      - POSTGRES_DB=msf
+    volumes:
+      - ./kali/metasploit-db:/var/lib/postgresql/data
+    mem_limit: 512m
+    cpus: 0.5
+
+
+volumes:
+  elasticsearch-data:
+  metasploit-db:
+

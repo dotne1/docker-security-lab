@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - Honeypot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .login-box {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            width: 300px;
+        }
+        h2 {
+            margin-top: 0;
+            color: #333;
+            text-align: center;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .error {
+            color: red;
+            font-size: 12px;
+            display: none;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-box">
+        <h2>🔐 Admin Panel</h2>
+        <form id="loginForm">
+            <input type="text" id="username" name="username" placeholder="Username" required>
+            <input type="password" id="password" name="password" placeholder="Password" required>
+            <button type="submit">Login</button>
+            <div class="error" id="error">Invalid credentials. Access denied.</div>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            // Log attempt (in real honeypot, this would be sent to monitoring)
+            console.log('Login attempt:', {
+                username: document.getElementById('username').value,
+                password: document.getElementById('password').value,
+                timestamp: new Date().toISOString(),
+                ip: 'logged-by-nginx'
+            });
+            // Always show error to appear like real login
+            document.getElementById('error').style.display = 'block';
+        });
+    </script>
+</body>
+</html>
+
