@@ -162,6 +162,20 @@ services:
     mem_limit: 512m
     cpus: 0.5
 
+  # Grok-Code API (AI Assistant)
+  grok-code-api:
+    build: ./grok-code
+    container_name: grok-code-api
+    networks:
+      - pentest-network
+    ports:
+      - "8180:8180"
+    environment:
+      - GROK_API_KEY=${GROK_API_KEY}
+    mem_limit: 512m
+    cpus: 1
+    restart: unless-stopped
+
 
 volumes:
   elasticsearch-data:
