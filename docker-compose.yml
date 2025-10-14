@@ -39,7 +39,7 @@ services:
       - NET_RAW
     mem_limit: 4g
     cpus: 2
-    command: /bin/bash -c "apt update && apt install -y nmap metasploit-framework sqlmap nikto dirb hydra john netcat-traditional curl wget git nano vim libblas3 liblapack3 libblas-dev liblapack-dev && tail -f /dev/null"
+    command: /bin/bash -c "[ -f /root/.tools_installed ] || (apt update && apt install -y nmap metasploit-framework sqlmap nikto dirb hydra john netcat-traditional curl wget git nano vim libblas3 liblapack3 libblas-dev liblapack-dev && touch /root/.tools_installed); tail -f /dev/null"
 
   # Network Security Enforcer
   network-security:
