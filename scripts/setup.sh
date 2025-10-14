@@ -39,22 +39,14 @@ fi
 
 # Check for .env file
 if [ ! -f .env ]; then
-    echo -e "${YELLOW}Creating .env file...${NC}"
-    cat > .env << 'EOF'
-# Future: Grok-Code Integration (PLANNING)
-# 
-# This lab is designed to integrate with Grok-Code (xAI's lightweight coding model)
-# for legitimate AI-powered security assistance. The integration will use proper
-# API endpoints when available.
-#
-# Current Status: Planning phase - no AI integration yet
-# Goal: Clean, legitimate Grok-Code API integration for security research assistance
-
-# Future configuration will go here when Grok-Code API is available
-# GROK_CODE_API_KEY=your_legitimate_api_key_here
-EOF
-    echo -e "${GREEN}.env file created!${NC}"
-    echo -e "${YELLOW}Future: Grok-Code integration planned for legitimate API usage.${NC}"
+    echo -e "${YELLOW}Creating .env file from template...${NC}"
+    if [ -f env.example ]; then
+        cp env.example .env
+        echo -e "${GREEN}.env file created from env.example!${NC}"
+        echo -e "${YELLOW}Please edit .env and add your Grok API key (optional)${NC}"
+    else
+        echo -e "${RED}Warning: env.example not found!${NC}"
+    fi
     echo ""
 fi
 
@@ -85,16 +77,18 @@ echo ""
 echo -e "${GREEN}✅ Setup complete!${NC}"
 echo ""
 echo "Next steps:"
-echo "1. Future: Grok-Code integration planned for legitimate API usage"
+echo "1. (Optional) Edit .env and add your Grok API key for AI assistance"
 echo "2. Run: docker-compose up -d"
-echo "3. Wait 2-3 minutes for services to start"
+echo "3. Wait 5-10 minutes for Kali tools to install (first time only)"
 echo "4. Access services at:"
 echo "   - DVWA: http://localhost:8080"
 echo "   - WebGoat: http://localhost:8081"
 echo "   - Juice Shop: http://localhost:8082"
 echo "   - Kibana: http://localhost:5601"
-echo "   - Future: Grok-Code integration planned"
+echo "   - Grok-Code API: http://localhost:8180"
 echo ""
 echo "To access Kali Linux: docker exec -it kali-workstation /bin/bash"
+echo ""
+echo "Check status: ./scripts/status.sh"
 echo ""
 

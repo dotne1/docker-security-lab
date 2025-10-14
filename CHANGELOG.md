@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.1] - 2025-10-14
+
+### Security
+- **Critical**: Fixed network isolation vulnerability where vulnerable apps could access internet
+- Added automated network security enforcement container with iptables
+- Vulnerable apps now properly isolated while maintaining port publishing
+
+### Fixed
+- WebGoat false "unhealthy" status (disabled broken health check)
+- setup.sh creating outdated .env template
+
+### Added
+- network-security service: Automated iptables enforcement (zero config)
+- Comprehensive testing documentation (BUGS_AND_FIXES.md, TESTING_SUMMARY.md)
+
+### Changed
+- setup.sh now copies from env.example for .env template
+
 ## [1.0.0] - 2025-10-01
 
 ### Added

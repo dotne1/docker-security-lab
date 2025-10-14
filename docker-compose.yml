@@ -41,6 +41,16 @@ services:
     cpus: 2
     command: /bin/bash -c "apt update && apt install -y nmap metasploit-framework sqlmap nikto dirb hydra john netcat-traditional curl wget git nano vim libblas3 liblapack3 libblas-dev liblapack-dev && tail -f /dev/null"
 
+  # Network Security Enforcer
+  network-security:
+    build: ./network-security
+    container_name: network-security
+    network_mode: host
+    cap_add:
+      - NET_ADMIN
+    restart: unless-stopped
+    privileged: true
+
   # DVWA - Damn Vulnerable Web Application
   dvwa:
     image: vulnerables/web-dvwa
@@ -50,6 +60,8 @@ services:
       - monitoring-network
     ports:
       - "8080:80"
+    depends_on:
+      - network-security
     mem_limit: 512m
     cpus: 1
     environment:
@@ -68,11 +80,15 @@ services:
     ports:
       - "8081:8080"
       - "9090:9090"
+    depends_on:
+      - network-security
     mem_limit: 1g
     cpus: 1
     environment:
       - WEBGOAT_PORT=8080
       - WEBWOLF_PORT=9090
+    healthcheck:
+      disable: true  # Disable broken health check (image requires curl but doesn't include it)
 
   # OWASP Juice Shop
   juiceshop:
@@ -83,6 +99,8 @@ services:
       - monitoring-network
     ports:
       - "8082:3000"
+    depends_on:
+      - network-security
     mem_limit: 1g
     cpus: 1
 
